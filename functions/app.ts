@@ -1,21 +1,24 @@
-import { corsMiddleware } from './middleware/cors';
-import { authRoutes } from './routes/auth';
-import { proxyRoutes } from './routes/proxy';
+import { corsMiddleware } from "./middleware/cors";
+import { authRoutes } from "./routes/auth";
+import { dbRoutes } from "./routes/db";
+import { proxyRoutes } from "./routes/proxy";
 
-import { Hono } from 'hono';
-import type { Env } from './types/hono';
+import { Hono } from "hono";
+import type { Env } from "./types/hono";
 
 export const app = new Hono<{
   Bindings: Env;
-}>().basePath('');
+}>().basePath("");
 
 // Global Middleware
-app.use('*', corsMiddleware);
+app.use("*", corsMiddleware);
 
 // Routes
-app.route('/auth', authRoutes);
+app.route("/auth", authRoutes);
 
-app.route('/proxy', proxyRoutes);
+app.route("/db", dbRoutes);
+
+app.route("/proxy", proxyRoutes);
 
 // Export AppType for RPC
 export type AppType = typeof app;

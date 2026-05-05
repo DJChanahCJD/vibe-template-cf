@@ -7,6 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 export const APP_NAME = "Vibe Template CF";
 export const metadata: Metadata = {
   title: APP_NAME,
+  description: "A modern full-stack template for Cloudflare Pages.",
+  applicationName: APP_NAME,
+  manifest: "/manifest.webmanifest",
 };
 
 export const viewport: Viewport = {
@@ -14,7 +17,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-}
+  themeColor: "#09090b",
+};
 
 export default function RootLayout({
   children,

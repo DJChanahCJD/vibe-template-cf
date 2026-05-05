@@ -18,8 +18,8 @@
   <img src="https://img.shields.io/badge/State-Zustand-orange" />
 </p>
 
-
 ## ✨ 核心功能
+
 - **全栈架构**: Monorepo (Frontend + Functions + Shared)
 - **前端框架**: [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/)
 - **后端运行时**: [Cloudflare Pages Functions](https://developers.cloudflare.com/pages/functions/) + [Hono](https://hono.dev/)
@@ -37,16 +37,19 @@
 ### 本地开发
 
 1. **安装依赖**
+
    ```bash
    # 在根目录运行，自动安装所有 Workspaces 依赖
    npm install
    ```
 
 2. **启动项目**
+
    ```bash
    npm run dev
    ```
-> 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
+
+   > 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
 
 3. **访问网站**
    - 前端：`http://localhost:3000`
@@ -75,7 +78,19 @@ Fork 本项目，然后在 Cloudflare Dashboard 创建 Pages 项目：
 PASSWORD=your_password          # 密码
 ```
 
-### 3. 重试部署
+### 3. 配置 D1 数据库
+
+创建 D1 数据库：
+
+```bash
+npx wrangler d1 create vibe-template-cf
+```
+
+将输出中的 `database_id` 填入根目录 `wrangler.jsonc` 的 `d1_databases[0].database_id`。
+
+可通过 `GET /db/health` 检查 D1 绑定是否正常。
+
+### 4. 重试部署
 
 回到部署页面重试部署，让环境变量生效。
 
@@ -98,9 +113,15 @@ PASSWORD=your_password          # 密码
 
 ## TODO
 
-- [ ] 引入 Husky 做 pre-commit 检查
-- [ ] 引入 D1 数据库支持
-- [ ] 引入最小 PWA 支持
+- [x] 引入 Husky 做 pre-commit 检查
+- [x] 引入 D1 数据库支持
+- [x] 引入最小 PWA 支持
+
+## 🧰 开发检查
+
+项目已配置 Husky pre-commit hook：
+
+- `lint-staged` 会格式化 staged 文件
 
 ## 🤝 Contributing
 
