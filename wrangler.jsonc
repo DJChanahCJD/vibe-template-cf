@@ -9,11 +9,4 @@
   "observability": {
     "enabled": true,
   },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "vibe-template-cf",
-      "database_id": "replace-with-your-d1-database-id",
-    },
-  ],
 }
