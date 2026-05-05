@@ -96,6 +96,12 @@ PASSWORD=your_password          # 密码
 
 - [Cloudflare API](https://developers.cloudflare.com/api)
 
+## TODO
+
+- [ ] 引入 Husky 做 pre-commit 检查
+- [ ] 引入 D1 数据库支持
+- [ ] 引入最小 PWA 支持
+
 ## 🤝 Contributing
 
 欢迎提交 **Issue** 反馈问题或建议新功能，也欢迎 **Pull Request** 一起完善项目！
