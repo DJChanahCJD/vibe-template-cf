@@ -36,24 +36,47 @@
 
 ### 本地开发
 
-1. **安装依赖**
+### 本地开发
 
-   ```bash
-   # 在根目录运行，自动安装所有 Workspaces 依赖
-   npm install
-   ```
+### 1. 获取项目
 
-2. **启动项目**
+```bash
+git clone https://github.com/DJChanahCJD/vibe-template-cf.git <your-project-name>
+cd <your-project-name>
+```
 
-   ```bash
-   npm run dev
-   ```
+### 2. 重置仓库 (推荐)
 
-   > 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
+移除原有远程仓库关联，并开启新项目历史。
 
-3. **访问网站**
-   - 前端：`http://localhost:3000`
-   - 后端：`http://localhost:8080` (由 Wrangler 代理)
+```bash
+git remote remove origin
+
+# 1. 先移除旧的.git目录（Windows）
+rm -r -fo .git
+# 2. 重新初始化Git仓库
+git init
+```
+
+### 3. 安装依赖
+
+```bash
+# 在根目录运行，自动安装所有 Workspaces 依赖
+npm install
+```
+
+### 4. 启动项目
+
+```bash
+npm run dev
+```
+
+> 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
+
+### 5. 访问网站
+
+- 前端：`http://localhost:3000`
+- 后端：`http://localhost:8080` (由 Wrangler 代理)
 
 > [!TIP]
 > 开发环境下密码为`123456`（在访问 `/admin` 页面时需要）
