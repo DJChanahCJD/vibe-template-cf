@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Env } from "../types/hono";
-import { fail, ok } from "@utils/response";
+import { ok, fail } from "@utils/response";
 
 export const dbRoutes = new Hono<{ Bindings: Env }>();
 
