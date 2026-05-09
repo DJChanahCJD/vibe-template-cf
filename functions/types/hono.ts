@@ -21,6 +21,6 @@ export interface D1PreparedStatement {
 
 export type Env = {
   your_kv: KVNamespace; // TODO: 替换为自己的KVNamespace， 或者删除
-  DB: D1Database;
+  your_db: D1Database; // TODO: 替换为自己的D1Database， 或者删除
   PASSWORD?: string;
 };

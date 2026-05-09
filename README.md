@@ -103,16 +103,18 @@ PASSWORD=your_password          # 密码
 
 ### 3. 配置 D1 数据库
 
+> 配置 KV 绑定步骤类似
+
 在 Cloudflare Dashboard 创建 D1 数据库，并绑定到 Pages 项目：
 
 1. 进入 **Workers & Pages**
 2. 选择当前 Pages 项目
 3. 进入 **Settings → Bindings**
 4. 添加 **D1 database binding**
-5. 变量名填写 `DB`
+5. 变量名填写 `your_db`（改为你实际使用的变量名）
 6. 选择你的 D1 数据库并重新部署
 
-本地开发已通过 `npm run dev` 中的 `--d1 DB` 挂载本地 D1，不需要在 `wrangler.jsonc` 写入 `database_id`。
+本地开发已通过 `npm run dev` 中的 `--d1 your_db` 挂载本地 D1，不需要在 `wrangler.jsonc` 写入 `database_id`。
 
 可通过 `GET /db/health` 检查 D1 绑定是否正常。
 

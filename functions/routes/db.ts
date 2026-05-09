@@ -9,7 +9,7 @@ export const dbRoutes = new Hono<{ Bindings: Env }>();
  */
 dbRoutes.get("/health", async (c) => {
   try {
-    const result = await c.env.DB.prepare("SELECT 1 AS ok").first<{
+    const result = await c.env.your_db.prepare("SELECT 1 AS ok").first<{
       ok: number;
     }>();
     return ok(c, { ok: result?.ok === 1 }, "D1 is healthy");
