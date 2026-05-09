@@ -124,16 +124,49 @@ PASSWORD=your_password          # 密码
 
 ## 📂 项目结构
 
-- `frontend/`: Next.js 前端应用
-  - `app/`: 页面与布局
-  - `components/`: UI 组件与业务组件
-  - `lib/`: 工具函数与 API 客户端
-  - `stores/`: 状态管理
-- `functions/`: Cloudflare Pages Functions 后端 (Hono)
-  - `routes/`: API 路由定义
-  - `middleware/`: 中间件 (Auth, CORS)
-  - `utils/`: 后端工具函数
-- `shared/`: 前后端共享代码 (Types, Utils)
+```text
+vibe-template-cf/
+├── frontend/                          # Next.js 前端应用
+│   ├── app/                           # 页面与布局 (App Router)
+│   ├── components/
+│   │   └── ui/                        # shadcn/ui 组件库
+│   ├── hooks/                         # React 自定义 Hooks
+│   ├── lib/
+│   │   ├── api/                       # API 客户端 (auth, client, config)
+│   │   └── utils/
+│   │       └── cache.ts               # 前端缓存工具
+│   ├── public/                        # 静态资源
+│   └── stores/                        # Zustand 状态管理
+│
+├── functions/                         # Cloudflare Pages Functions 后端 (Hono)
+│   ├── [[path]].ts                    # 入口路由
+│   ├── middleware/
+│   │   ├── auth.ts                    # 认证中间件
+│   │   └── cors.ts                    # CORS 中间件
+│   ├── routes/
+│   │   ├── auth.ts                    # 认证路由
+│   │   ├── db.ts                      # D1 数据库路由
+│   │   └── proxy.ts                   # 代理路由
+│   ├── types/                         # 后端类型定义
+│   └── utils/
+│       ├── auth.ts                    # 认证工具
+│       ├── cache.ts                   # 后端缓存工具
+│       ├── kv.ts                      # KV 存储工具
+│       ├── response.ts                # 响应格式化工具
+│       └── proxy/                     # 代理工具集
+│           ├── fetch.ts               # 代理请求封装
+│           ├── headers.ts             # 请求头处理
+│           ├── site-rules.ts          # 站点规则
+│           └── url-guard.ts           # URL 安全校验
+│
+├── shared/                            # 前后端共享代码
+│   └── src/
+│       └── types/                     # 共享类型定义 (Cloudflare 环境类型等)
+│
+├── test/                              # 集成测试
+├── .husky/                            # Git Hooks (pre-commit)
+├── wrangler.jsonc                     # Cloudflare Wrangler 配置
+└── package.json                       # 根 Monorepo 配置
 
 ## 🔍 参考资料
 
@@ -155,3 +188,4 @@ PASSWORD=your_password          # 密码
 
 欢迎提交 **Issue** 反馈问题或建议新功能，也欢迎 **Pull Request** 一起完善项目！
 觉得有用的话，点个 ⭐️ 支持一下吧！
+```

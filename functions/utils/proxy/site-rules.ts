@@ -8,27 +8,14 @@ export type SiteRule = {
 const DEFAULT_UA = "Mozilla/5.0 (compatible; vibe-template-cf Proxy/1.0)";
 
 export const SITE_RULES: SiteRule[] = [
+  // TODO: 添加你要处理的站点规则
   {
     // Bing 图片防盗链处理
     match: (u) => u.hostname.includes("bing.com"),
     headers: {
       Referer: "https://www.bing.com/",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    },
-  },
-  {
-    // Pixiv 相关防盗链处理
-    match: (u) =>
-      ["pximg.net", "pixiv.net", "pixiv.re"].some((h) => u.hostname.includes(h)),
-    headers: {
-      Referer: "https://www.pixiv.net/",
-    },
-  },
-  {
-    // Wallhaven 图片代理规则
-    match: (u) => u.hostname.includes("wallhaven.cc"),
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     },
   },
 ];
