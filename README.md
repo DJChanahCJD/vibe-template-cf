@@ -76,7 +76,7 @@ npm run dev
 ### 5. 访问网站
 
 - 前端：`http://localhost:3000`
-- 后端：`http://localhost:8080` (由 Wrangler 代理)
+- 后端：`http://localhost:8788` (由 Wrangler 代理)
 
 > [!TIP]
 > 开发环境下密码为`123456`（在访问 `/admin` 页面时需要）

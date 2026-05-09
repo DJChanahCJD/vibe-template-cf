@@ -2,7 +2,7 @@ var assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 
-const API_URL = "http://localhost:8080";
+const API_URL = "http://localhost:8788";
 const PASSWORD = "123456";
 
 describe("API Endpoints", function () {
@@ -21,14 +21,17 @@ describe("API Endpoints", function () {
 
     const data = await response.json();
     console.log("Login response:", data);
-    
+
     assert.strictEqual(response.status, 200, "Expected status code 200");
     assert.ok(data.success, "Expected success to be true");
     assert.ok(data.data.token, "Expected token to be present");
 
     // Check cookie
     const cookie = response.headers.get("set-cookie");
-    assert.ok(cookie && cookie.includes("auth="), "Expected auth cookie to be set");
+    assert.ok(
+      cookie && cookie.includes("auth="),
+      "Expected auth cookie to be set"
+    );
   });
 
   it("should fail with incorrect password", async function () {
