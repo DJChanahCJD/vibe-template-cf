@@ -1,5 +1,7 @@
 node_modules
-data
+dist
 .wrangler
+.vite
 .trae/
 .codebuddy/
+*.tsbuildinfo

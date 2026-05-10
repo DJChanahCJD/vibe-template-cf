@@ -1,0 +1,16 @@
+{
+  "name": "Vibe Pages Vite",
+  "short_name": "Vibe Vite",
+  "description": "A Vite, React, Tailwind CSS, shadcn/ui template for Cloudflare Pages.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

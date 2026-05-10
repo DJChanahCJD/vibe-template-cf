@@ -1,191 +1,128 @@
-# Vibe Template CF
+# Vibe Pages Vite
 
 <p align="center">
-  <img width="100" alt="Vibe Template CF icon" src="frontend/app/icon.svg">
+  <img width="100" alt="Vibe Pages Vite icon" src="public/icon.svg">
 </p>
-<p align="center"><strong>Vibe Template CF</strong></p>
+<p align="center"><strong>Vibe Pages Vite</strong></p>
 
 <p align="center">
-  基于 Next.js 16、Tailwind CSS v4、Hono 和 Cloudflare Pages 的现代化全栈开发模板。
+  基于 Vite、React、Tailwind CSS v4、shadcn/ui 和 Cloudflare Pages 的纯前端应用模板。
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite&logoColor=white" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?logo=tailwindcss&logoColor=white" />
-  <img src="https://img.shields.io/badge/Hono-4.x-000000?logo=hono&logoColor=white" />
+  <img src="https://img.shields.io/badge/Router-React_Router-CA4245" />
   <img src="https://img.shields.io/badge/State-Zustand-orange" />
 </p>
 
-## ✨ 核心功能
+## 核心功能
 
-- **全栈架构**: Monorepo (Frontend + Functions + Shared)
-- **前端框架**: [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/)
-- **后端运行时**: [Cloudflare Pages Functions](https://developers.cloudflare.com/pages/functions/) + [Hono](https://hono.dev/)
-- **样式方案**: [Tailwind CSS v4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
-- **状态管理**: [Zustand](https://zustand-demo.pmnd.rs/)
-- **类型安全**: TypeScript + Shared Types
+- **纯前端架构**: Vite + React SPA，根目录直接开发。
+- **样式方案**: Tailwind CSS v4 + shadcn/ui 完整组件库。
+- **路由方案**: React Router + Cloudflare Pages SPA fallback。
+- **开发基座**: 暗色主题、toast、Zustand 持久化示例、常用工具函数。
+- **部署目标**: Cloudflare Pages 静态站点，构建产物输出到 `dist`。
 
-## 🚀 快速开始
+## 快速开始
 
 ### 前置要求
 
-- Node.js 18+
-- Cloudflare 账号（免费）
-
-### 本地开发
-
-### 本地开发
+- Node.js 20.19+ 或 22.12+
+- Cloudflare 账号（部署时需要）
 
 ### 1. 获取项目
 
 ```bash
 git clone https://github.com/DJChanahCJD/vibe-template-cf.git <your-project-name>
 cd <your-project-name>
+git switch pages-vite
 ```
 
-### 2. 重置仓库 (推荐)
-
-移除原有远程仓库关联，并开启新项目历史。
+### 2. 重置仓库（推荐）
 
 ```bash
 git remote remove origin
-
-# 1. 先移除旧的.git目录（Windows）
 rm -r -fo .git
-# 2. 重新初始化Git仓库
 git init
 ```
 
 ### 3. 安装依赖
 
 ```bash
-# 在根目录运行，自动安装所有 Workspaces 依赖
 npm install
 ```
 
-### 4. 启动项目
+### 4. 本地开发
 
 ```bash
 npm run dev
 ```
 
-> 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
+访问 Vite 提示的本地地址，通常是 `http://localhost:5173`。
 
-### 5. 访问网站
+## Cloudflare Pages 部署
 
-- 前端：`http://localhost:3000`
-- 后端：`http://localhost:8788` (由 Wrangler 代理)
-
-> [!TIP]
-> 开发环境下密码为`123456`（在访问 `/admin` 页面时需要）
-> 修改 functions 代码后，可运行 `npm run ci-test` 快速测试功能是否正常。
-
----
-
-## 📦 Cloudflare 部署
-
-### 1. 创建 Pages 项目
-
-Fork 本项目，然后在 Cloudflare Dashboard 创建 Pages 项目：
+在 Cloudflare Dashboard 创建 Pages 项目并连接仓库：
 
 - **构建命令**: `npm run build`
-- **构建输出目录**: `frontend/out`
+- **构建输出目录**: `dist`
 
-### 2. 配置环境变量
+本模板已经提供 `public/_redirects`，React Router 的前端路由刷新后会回退到 `index.html`。
 
-在 Pages 项目的设置中添加以下环境变量：
+本地预览 Cloudflare Pages 静态产物：
 
-```env
-PASSWORD=your_password          # 密码
+```bash
+npm run build
+npm run pages:dev
 ```
 
-### 3. 配置 D1 数据库
-
-> 配置 KV 绑定步骤类似
-
-在 Cloudflare Dashboard 创建 D1 数据库，并绑定到 Pages 项目：
-
-1. 进入 **Workers & Pages**
-2. 选择当前 Pages 项目
-3. 进入 **Settings → Bindings**
-4. 添加 **D1 database binding**
-5. 变量名填写 `your_db`（改为你实际使用的变量名）
-6. 选择你的 D1 数据库并重新部署
-
-本地开发已通过 `npm run dev` 中的 `--d1 your_db` 挂载本地 D1，不需要在 `wrangler.jsonc` 写入 `database_id`。
-
-可通过 `GET /db/health` 检查 D1 绑定是否正常。
-
-### 4. 重试部署
-
-回到部署页面重试部署，让环境变量生效。
-
-## 📂 项目结构
+## 项目结构
 
 ```text
-vibe-template-cf/
-├── frontend/                          # Next.js 前端应用
-│   ├── app/                           # 页面与布局 (App Router)
-│   ├── components/
-│   │   └── ui/                        # shadcn/ui 组件库
-│   ├── hooks/                         # React 自定义 Hooks
-│   ├── lib/
-│   │   ├── api/                       # API 客户端 (auth, client, config)
-│   │   └── utils/
-│   │       └── cache.ts               # 前端缓存工具
-│   ├── public/                        # 静态资源
-│   └── stores/                        # Zustand 状态管理
-│
-├── functions/                         # Cloudflare Pages Functions 后端 (Hono)
-│   ├── [[path]].ts                    # 入口路由
-│   ├── middleware/
-│   │   ├── auth.ts                    # 认证中间件
-│   │   └── cors.ts                    # CORS 中间件
-│   ├── routes/
-│   │   ├── auth.ts                    # 认证路由
-│   │   ├── db.ts                      # D1 数据库路由
-│   │   └── proxy.ts                   # 代理路由
-│   ├── types/                         # 后端类型定义
-│   └── utils/
-│       ├── auth.ts                    # 认证工具
-│       ├── cache.ts                   # 后端缓存工具
-│       ├── kv.ts                      # KV 存储工具
-│       ├── response.ts                # 响应格式化工具
-│       └── proxy/                     # 代理工具集
-│           ├── fetch.ts               # 代理请求封装
-│           ├── headers.ts             # 请求头处理
-│           ├── site-rules.ts          # 站点规则
-│           └── url-guard.ts           # URL 安全校验
-│
-├── shared/                            # 前后端共享代码
-│   └── src/
-│       └── types/                     # 共享类型定义 (Cloudflare 环境类型等)
-│
-├── test/                              # 集成测试
-├── .husky/                            # Git Hooks (pre-commit)
-├── wrangler.jsonc                     # Cloudflare Wrangler 配置
-└── package.json                       # 根 Monorepo 配置
-
-## 🔍 参考资料
-
-- [Cloudflare API](https://developers.cloudflare.com/api)
-
-## TODO
-
-- [x] 引入 Husky 做 pre-commit 检查
-- [x] 引入 D1 数据库支持
-- [x] 引入最小 PWA 支持
-
-## 🧰 开发检查
-
-项目已配置 Husky pre-commit hook：
-
-- `lint-staged` 会格式化 staged 文件
-
-## 🤝 Contributing
-
-欢迎提交 **Issue** 反馈问题或建议新功能，也欢迎 **Pull Request** 一起完善项目！
-觉得有用的话，点个 ⭐️ 支持一下吧！
+vibe-pages-vite/
+├── src/
+│   ├── App.tsx                    # 应用路由与默认首页
+│   ├── globals.css                # Tailwind v4 与主题变量
+│   └── main.tsx                   # React 入口
+├── components/
+│   ├── ui/                        # shadcn/ui 组件库
+│   ├── theme-provider.tsx
+│   └── ThemeToggle.tsx
+├── hooks/                         # React 自定义 Hooks
+├── lib/
+│   └── utils/                     # 通用前端工具
+├── stores/                        # Zustand 状态管理
+├── public/
+│   ├── _redirects                 # Cloudflare Pages SPA fallback
+│   ├── icon.svg
+│   └── manifest.webmanifest
+├── components.json                # shadcn/ui 配置
+├── vite.config.ts                 # Vite 配置
+├── wrangler.jsonc                 # Cloudflare Pages 静态预览配置
+└── package.json
 ```
+
+## 开发检查
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
+
+或一次运行：
+
+```bash
+npm run ci:static
+```
+
+项目已配置 Husky pre-commit hook，会运行类型检查与 lint-staged。
+
+## 分支说明
+
+`main` 分支保留全栈 Next.js + Hono + Cloudflare Pages Functions 模板。
+
+`pages-vite` 分支专注纯前端 Cloudflare Pages 应用。
