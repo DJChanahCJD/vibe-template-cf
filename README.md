@@ -1,5 +1,7 @@
 # Vibe Template CF
 
+[纯前端版本](https://github.com/DJChanahCJD/vibe-template-cf/tree/pages-vite) | [Worker 版本](https://github.com/DJChanahCJD/vibe-template-cf/tree/worker)
+
 <p align="center">
   <img width="100" alt="Vibe Template CF icon" src="frontend/app/icon.svg">
 </p>
