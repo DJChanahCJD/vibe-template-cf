@@ -28,14 +28,14 @@
     "bindings": [
       {
         "name": "your_do",
-        "class_name": "RoomSync",
+        "class_name": "YourDurableObject",
       },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["RoomSync"],
+      "new_sqlite_classes": ["YourDurableObject"],
     },
   ],
   "observability": {

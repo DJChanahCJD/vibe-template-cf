@@ -1,6 +1,6 @@
 import { app } from "../functions/app";
 
-export { RoomSync } from "../functions/durable-objects/room-sync";
+export { YourDurableObject } from "../functions/durable-objects/your-do";
 
 /**
  * Cloudflare Workers 入口：API 交给 Hono，其余请求回退到静态资源。

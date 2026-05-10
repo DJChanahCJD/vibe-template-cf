@@ -5,42 +5,34 @@ import { fail, ok } from "@utils/response";
 export const wsRoutes = new Hono<{ Bindings: Env }>();
 
 /**
- * 将房间 WebSocket 连接转发到按 roomCode 命名的 Durable Object。
+ * 将 WebSocket 连接转发到按 id 命名的 Durable Object。
  */
-wsRoutes.get("/:roomCode", async (c) => {
+wsRoutes.get("/:id", async (c) => {
   const upgrade = c.req.header("Upgrade");
   if (upgrade !== "websocket") {
     return fail(c, "Expected WebSocket upgrade", 426);
   }
 
-  const roomCode = c.req.param("roomCode");
-  const id = c.env.your_do.idFromName(roomCode);
-  const stub = c.env.your_do.get(id);
+  const name = c.req.param("id");
+  const durableObjectId = c.env.your_do.idFromName(name);
+  const stub = c.env.your_do.get(durableObjectId);
 
   return stub.fetch(c.req.raw);
 });
 
 /**
- * 触发指定房间的广播，用于本地验证 Durable Object WebSocket 示例。
+ * 触发指定 Durable Object 实例的广播，用于本地验证 WebSocket 示例。
  */
-wsRoutes.post("/:roomCode/broadcast", async (c) => {
-  const roomCode = c.req.param("roomCode");
-  const id = c.env.your_do.idFromName(roomCode);
-  const stub = c.env.your_do.get(id);
-  const body = (await c.req.json().catch(() => ({}))) as {
-    reason?: string;
-    version?: number;
-  };
+wsRoutes.post("/:id/broadcast", async (c) => {
+  const name = c.req.param("id");
+  const durableObjectId = c.env.your_do.idFromName(name);
+  const stub = c.env.your_do.get(durableObjectId);
+  const body = await c.req.text();
 
-  await stub.fetch("https://room-sync.local/broadcast", {
+  await stub.fetch("https://your-do.local/broadcast", {
     method: "POST",
-    body: JSON.stringify({
-      type: "room.updated",
-      roomCode,
-      version: body.version ?? Date.now(),
-      reason: body.reason ?? "manual",
-    }),
+    body,
   });
 
-  return ok(c, { roomCode }, "Broadcast sent");
+  return ok(c, { id: name }, "Broadcast sent");
 });

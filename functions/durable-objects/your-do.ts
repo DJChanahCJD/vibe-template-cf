@@ -1,16 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
 
-type RoomMessage = {
-  type: "room.updated";
-  roomCode: string;
-  version: number;
-  reason: string;
-};
-
 /**
- * 维护单个房间内的 WebSocket 连接，并向同房间客户端广播消息。
+ * 提供最小 Durable Object WebSocket 示例，并支持向当前实例广播消息。
  */
-export class RoomSync extends DurableObject {
+export class YourDurableObject extends DurableObject {
   /**
    * 处理 WebSocket upgrade 或内部广播请求。
    */
@@ -18,8 +11,8 @@ export class RoomSync extends DurableObject {
     const url = new URL(request.url);
 
     if (url.pathname === "/broadcast") {
-      const msg = (await request.json()) as RoomMessage;
-      await this.broadcast(msg);
+      const message = await request.text();
+      this.broadcast(message);
       return new Response("ok");
     }
 
@@ -32,15 +25,14 @@ export class RoomSync extends DurableObject {
   }
 
   /**
-   * 向当前 Durable Object 内的所有活动 WebSocket 发送消息。
+   * 向当前 Durable Object 实例内的所有活动 WebSocket 发送消息。
    */
-  private async broadcast(msg: RoomMessage): Promise<void> {
-    const data = JSON.stringify(msg);
+  private broadcast(message: string): void {
     const sockets = this.ctx.getWebSockets();
 
     for (const ws of sockets) {
       try {
-        ws.send(data);
+        ws.send(message);
       } catch {
         // 发送失败说明连接状态已不可用，Hibernation API 会负责生命周期。
       }
@@ -48,17 +40,10 @@ export class RoomSync extends DurableObject {
   }
 
   /**
-   * 响应客户端 ping，用于验证 WebSocket 连接可用。
+   * 接收客户端消息；模板默认不定义业务协议。
    */
-  async webSocketMessage(ws: WebSocket, message: string): Promise<void> {
-    try {
-      const msg = JSON.parse(message);
-      if (msg.type === "ping") {
-        ws.send(JSON.stringify({ type: "pong" }));
-      }
-    } catch {
-      // 忽略无效消息。
-    }
+  async webSocketMessage(_ws: WebSocket, _message: string): Promise<void> {
+    return;
   }
 
   /**
@@ -69,7 +54,7 @@ export class RoomSync extends DurableObject {
   }
 
   /**
-   * WebSocket 出错时保持静默，避免单个连接影响房间。
+   * WebSocket 出错时保持静默，避免单个连接影响实例。
    */
   async webSocketError(_ws: WebSocket, _error: unknown): Promise<void> {
     return;
