@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" ",
     "dev:frontend": "npm run dev --prefix frontend",
-    "dev:backend": "npx wrangler pages dev frontend/out -kv your_kv --d1 your_db --binding PASSWORD=123456 --ip 0.0.0.0 --port 8788",
+    "dev:backend": "npx wrangler dev --ip 0.0.0.0 --port 8788",
     "build": "npm run build --prefix frontend",
     "lint": "npm run lint --prefix frontend",
     "typecheck": "npm run typecheck --prefix frontend",

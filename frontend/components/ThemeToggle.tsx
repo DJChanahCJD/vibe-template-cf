@@ -1,33 +1,21 @@
-"use client"
+"use client";
 
-import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+} from "@/components/ui/tooltip";
+import { useTheme } from "next-themes";
 
+/**
+ * 切换浅色/深色主题。
+ */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-9 w-9 text-foreground/60 hover:text-foreground hover:bg-secondary/50"
-      />
-    )
-  }
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   return (
     <TooltipProvider>
@@ -36,10 +24,10 @@ export function ThemeToggle() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={() => setTheme(isDark ? "light" : "dark")}
             className="h-9 w-9 text-foreground/60 hover:text-foreground hover:bg-secondary/50"
           >
-            {theme === "dark" ? (
+            {isDark ? (
               <Moon className="h-4 w-4" />
             ) : (
               <Sun className="h-4 w-4" />
@@ -47,9 +35,9 @@ export function ThemeToggle() {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}</p>
+          <p>{isDark ? "切换到浅色模式" : "切换到深色模式"}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  )
+  );
 }

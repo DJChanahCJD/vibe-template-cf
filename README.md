@@ -1,12 +1,14 @@
-# Vibe Template CF
+# Vibe Template CF Worker
+
+[纯前端版本](https://github.com/DJChanahCJD/vibe-template-cf/tree/pages-vite) | [Worker 版本](https://github.com/DJChanahCJD/vibe-template-cf/tree/worker)
 
 <p align="center">
   <img width="100" alt="Vibe Template CF icon" src="frontend/app/icon.svg">
 </p>
-<p align="center"><strong>Vibe Template CF</strong></p>
+<p align="center"><strong>Vibe Template CF Worker</strong></p>
 
 <p align="center">
-  基于 Next.js 16、Tailwind CSS v4、Hono 和 Cloudflare Pages 的现代化全栈开发模板。
+  基于 Next.js 16、Tailwind CSS v4、Hono、Cloudflare Workers 和 Durable Objects 的全栈模板。
 </p>
 
 <p align="center">
@@ -15,177 +17,174 @@
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?logo=tailwindcss&logoColor=white" />
   <img src="https://img.shields.io/badge/Hono-4.x-000000?logo=hono&logoColor=white" />
-  <img src="https://img.shields.io/badge/State-Zustand-orange" />
+  <img src="https://img.shields.io/badge/Workers-Durable_Objects-F38020?logo=cloudflare&logoColor=white" />
 </p>
 
-## ✨ 核心功能
+## 核心功能
 
-- **全栈架构**: Monorepo (Frontend + Functions + Shared)
-- **前端框架**: [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/)
-- **后端运行时**: [Cloudflare Pages Functions](https://developers.cloudflare.com/pages/functions/) + [Hono](https://hono.dev/)
-- **样式方案**: [Tailwind CSS v4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
-- **状态管理**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **部署目标**: Cloudflare Workers + Workers Static Assets
+- **前端框架**: Next.js 16 静态导出 + React 19
+- **后端运行时**: Hono on Cloudflare Workers
+- **实时能力**: SQLite-backed Durable Object + WebSocket Hibernation
+- **数据绑定**: D1 / KV / Durable Objects 示例
+- **样式方案**: Tailwind CSS v4 + shadcn/ui
 - **类型安全**: TypeScript + Shared Types
 
-## 🚀 快速开始
+## 快速开始
 
 ### 前置要求
 
 - Node.js 18+
-- Cloudflare 账号（免费）
+- Cloudflare 账号（免费计划可用）
 
-### 本地开发
-
-### 本地开发
-
-### 1. 获取项目
+### 安装依赖
 
 ```bash
-git clone https://github.com/DJChanahCJD/vibe-template-cf.git <your-project-name>
-cd <your-project-name>
-```
-
-### 2. 重置仓库 (推荐)
-
-移除原有远程仓库关联，并开启新项目历史。
-
-```bash
-git remote remove origin
-
-# 1. 先移除旧的.git目录（Windows）
-rm -r -fo .git
-# 2. 重新初始化Git仓库
-git init
-```
-
-### 3. 安装依赖
-
-```bash
-# 在根目录运行，自动安装所有 Workspaces 依赖
 npm install
 ```
 
-### 4. 启动项目
+### 本地开发
+
+第一次启动前先构建静态前端资源：
 
 ```bash
+npm run build
 npm run dev
 ```
 
-> 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
+本地地址：
 
-### 5. 访问网站
+- Next.js 开发服务：`http://localhost:3000`
+- Workers 开发服务：`http://localhost:8788`
+- API 健康检查：`http://localhost:8788/api/db/health`
 
-- 前端：`http://localhost:3000`
-- 后端：`http://localhost:8788` (由 Wrangler 代理)
+> 开发环境绑定来自 `wrangler.jsonc`：`your_kv`、`your_db`、`your_do` 和 `PASSWORD=123456`。
 
-> [!TIP]
-> 开发环境下密码为`123456`（在访问 `/admin` 页面时需要）
-> 修改 functions 代码后，可运行 `npm run ci-test` 快速测试功能是否正常。
+## API 路由
 
----
+Worker 入口只把 `/api/*` 请求交给 Hono，其余请求回退到静态资源。
 
-## 📦 Cloudflare 部署
+当前内置路由：
 
-### 1. 创建 Pages 项目
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/db/health`
+- `GET /api/proxy`
+- `GET /api/ws/:roomCode`
+- `POST /api/ws/:roomCode/broadcast`
 
-Fork 本项目，然后在 Cloudflare Dashboard 创建 Pages 项目：
+前端 Hono client 的 base URL 已统一为 `/api`。
 
-- **构建命令**: `npm run build`
-- **构建输出目录**: `frontend/out`
+## WebSocket 示例
 
-### 2. 配置环境变量
+`RoomSync` 是一个最小 Durable Object WebSocket 示例：
 
-在 Pages 项目的设置中添加以下环境变量：
+- 同一个 `roomCode` 会映射到同一个 Durable Object
+- 客户端发送 `{"type":"ping"}` 会收到 `{"type":"pong"}`
+- 调用 `POST /api/ws/:roomCode/broadcast` 会广播 `room.updated`
+- 使用 WebSocket Hibernation API，不依赖常驻内存循环
+- Cloudflare 绑定名统一使用 `your_do`，示例类名保留为 `RoomSync`
 
-```env
-PASSWORD=your_password          # 密码
+浏览器控制台测试：
+
+```js
+const ws = new WebSocket("ws://localhost:8788/api/ws/demo");
+ws.onmessage = (event) => console.log(event.data);
+ws.onopen = () => ws.send(JSON.stringify({ type: "ping" }));
 ```
 
-### 3. 配置 D1 数据库
+广播测试：
 
-> 配置 KV 绑定步骤类似
+```bash
+curl -X POST http://localhost:8788/api/ws/demo/broadcast ^
+  -H "Content-Type: application/json" ^
+  -d "{\"reason\":\"manual\",\"version\":1}"
+```
 
-在 Cloudflare Dashboard 创建 D1 数据库，并绑定到 Pages 项目：
+## Cloudflare 部署
 
-1. 进入 **Workers & Pages**
-2. 选择当前 Pages 项目
-3. 进入 **Settings → Bindings**
-4. 添加 **D1 database binding**
-5. 变量名填写 `your_db`（改为你实际使用的变量名）
-6. 选择你的 D1 数据库并重新部署
+### 1. 构建
 
-本地开发已通过 `npm run dev` 中的 `--d1 your_db` 挂载本地 D1，不需要在 `wrangler.jsonc` 写入 `database_id`。
+```bash
+npm run build
+```
 
-可通过 `GET /db/health` 检查 D1 绑定是否正常。
+### 2. 配置 Cloudflare 绑定
 
-### 4. 重试部署
+本模板使用占位命名：`your_kv`、`your_db`、`your_do`。创建资源后按需替换为你的项目命名。
 
-回到部署页面重试部署，让环境变量生效。
+创建 D1 后，在 `wrangler.jsonc` 增加真实 D1 绑定：
 
-## 📂 项目结构
+```jsonc
+"d1_databases": [
+  {
+    "binding": "your_db",
+    "database_name": "your_db",
+    "database_id": "your-d1-database-id"
+  }
+]
+```
+
+然后通过 `GET /api/db/health` 检查绑定。
+
+Durable Object 默认已配置为：
+
+```jsonc
+"durable_objects": {
+  "bindings": [
+    {
+      "name": "your_do",
+      "class_name": "RoomSync"
+    }
+  ]
+}
+```
+
+### 3. 配置环境变量
+
+```bash
+npx wrangler secret put PASSWORD
+```
+
+### 4. 部署 Worker
+
+```bash
+npx wrangler deploy
+```
+
+## 免费计划注意事项
+
+- Workers Free plan 可用于该模板的基础开发和部署。
+- Durable Objects 在免费计划下使用 SQLite-backed classes，因此 `wrangler.jsonc` 使用 `new_sqlite_classes`。
+- WebSocket 使用 Durable Object Hibernation API，避免普通长驻连接模型带来的额外资源浪费。
+- D1、KV、Workers、Durable Objects 都有免费额度限制，生产项目需要按实际流量评估。
+
+## 项目结构
 
 ```text
 vibe-template-cf/
-├── frontend/                          # Next.js 前端应用
-│   ├── app/                           # 页面与布局 (App Router)
-│   ├── components/
-│   │   └── ui/                        # shadcn/ui 组件库
-│   ├── hooks/                         # React 自定义 Hooks
-│   ├── lib/
-│   │   ├── api/                       # API 客户端 (auth, client, config)
-│   │   └── utils/
-│   │       └── cache.ts               # 前端缓存工具
-│   ├── public/                        # 静态资源
-│   └── stores/                        # Zustand 状态管理
-│
-├── functions/                         # Cloudflare Pages Functions 后端 (Hono)
-│   ├── [[path]].ts                    # 入口路由
-│   ├── middleware/
-│   │   ├── auth.ts                    # 认证中间件
-│   │   └── cors.ts                    # CORS 中间件
+├── src/
+│   └── index.ts                       # Cloudflare Workers 入口
+├── frontend/                          # Next.js 静态前端
+├── functions/                         # Hono API 与 Durable Objects
+│   ├── app.ts                         # API 路由挂载
+│   ├── durable-objects/
+│   │   └── room-sync.ts               # WebSocket Durable Object
 │   ├── routes/
-│   │   ├── auth.ts                    # 认证路由
-│   │   ├── db.ts                      # D1 数据库路由
-│   │   └── proxy.ts                   # 代理路由
-│   ├── types/                         # 后端类型定义
-│   └── utils/
-│       ├── auth.ts                    # 认证工具
-│       ├── cache.ts                   # 后端缓存工具
-│       ├── kv.ts                      # KV 存储工具
-│       ├── response.ts                # 响应格式化工具
-│       └── proxy/                     # 代理工具集
-│           ├── fetch.ts               # 代理请求封装
-│           ├── headers.ts             # 请求头处理
-│           ├── site-rules.ts          # 站点规则
-│           └── url-guard.ts           # URL 安全校验
-│
-├── shared/                            # 前后端共享代码
-│   └── src/
-│       └── types/                     # 共享类型定义 (Cloudflare 环境类型等)
-│
-├── test/                              # 集成测试
-├── .husky/                            # Git Hooks (pre-commit)
-├── wrangler.jsonc                     # Cloudflare Wrangler 配置
-└── package.json                       # 根 Monorepo 配置
+│   │   ├── auth.ts
+│   │   ├── db.ts
+│   │   ├── proxy.ts
+│   │   └── ws.ts
+│   └── types/
+├── shared/                            # 前后端共享类型
+├── wrangler.jsonc                     # Workers 配置
+└── package.json
+```
 
-## 🔍 参考资料
+## 开发检查
 
-- [Cloudflare API](https://developers.cloudflare.com/api)
-
-## TODO
-
-- [x] 引入 Husky 做 pre-commit 检查
-- [x] 引入 D1 数据库支持
-- [x] 引入最小 PWA 支持
-
-## 🧰 开发检查
-
-项目已配置 Husky pre-commit hook：
-
-- `lint-staged` 会格式化 staged 文件
-
-## 🤝 Contributing
-
-欢迎提交 **Issue** 反馈问题或建议新功能，也欢迎 **Pull Request** 一起完善项目！
-觉得有用的话，点个 ⭐️ 支持一下吧！
+```bash
+npm run typecheck
+npm run lint
+npm run build
 ```

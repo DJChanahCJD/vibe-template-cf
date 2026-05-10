@@ -7,15 +7,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+type SchedulerWithYield = {
+  yield?: () => Promise<void>;
+};
+
 /**
  * 格式化字节大小为人类可读格式
  * @param bytes 字节数
  * @returns 格式化后的字符串（如：1.5 MB, 2.3 GB）
  */
 export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
 }
@@ -47,7 +51,7 @@ export async function retry<T>(
       return await fn();
     } catch (e) {
       error = e;
-      if (i < times) await new Promise(r => setTimeout(r, delay));
+      if (i < times) await new Promise((r) => setTimeout(r, delay));
     }
   }
   throw error;
@@ -65,7 +69,6 @@ export async function processBatchIO<T>(
   worker: (item: T, index: number) => Promise<void>,
   onProgress?: (done: number, total: number) => void,
   concurrency = 6
-  
 ): Promise<void> {
   const total = items.length;
   if (!total) return;
@@ -86,10 +89,12 @@ export async function processBatchIO<T>(
  * 优先使用 scheduler.yield（Chrome 129+），降级到 MessageChannel 宏任务
  */
 const yieldToMain = (): Promise<void> => {
-  if (typeof (globalThis as any).scheduler?.yield === 'function') {
-    return (globalThis as any).scheduler.yield();
+  const scheduler = (globalThis as { scheduler?: SchedulerWithYield })
+    .scheduler;
+  if (typeof scheduler?.yield === "function") {
+    return scheduler.yield();
   }
-  return new Promise<void>(resolve => {
+  return new Promise<void>((resolve) => {
     const ch = new MessageChannel();
     ch.port1.onmessage = () => resolve();
     ch.port2.postMessage(null);

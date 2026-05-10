@@ -16,11 +16,29 @@ export interface D1PreparedStatement {
   first<T = unknown>(): Promise<T | null>;
 }
 
-// 可以自己拓展 R2Bucket, SQLite等
-// KV和环境变量配置参考："dev:backend": "npx wrangler pages dev frontend/out --kv \"oh_file_url\" --r2 \"oh_file_r2\" --binding PASSWORD=123456 --binding API_TOKEN=123456 --ip 0.0.0.0 --port 8788 --persist-to ./data",
+export interface Fetcher {
+  fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+}
+
+export interface DurableObjectId {
+  toString(): string;
+}
+
+export interface DurableObjectStub {
+  fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+}
+
+export interface DurableObjectNamespace {
+  idFromName(name: string): DurableObjectId;
+  get(id: DurableObjectId): DurableObjectStub;
+}
+
+// 可以自己拓展 R2Bucket、D1、Durable Object 等绑定。
 
 export type Env = {
   your_kv: KVNamespace; // TODO: 替换为自己的KVNamespace， 或者删除
   your_db: D1Database; // TODO: 替换为自己的D1Database， 或者删除
+  ASSETS: Fetcher;
+  your_do: DurableObjectNamespace; // TODO: 替换为自己的DurableObjectNamespace，或者删除
   PASSWORD?: string;
 };

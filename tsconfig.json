@@ -1,4 +1,12 @@
 {
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@functions/*": ["functions/*"],
+      "@shared/*": ["shared/src/*"],
+      "@utils/*": ["functions/utils/*"]
+    }
+  },
   "files": [],
   "references": [
     { "path": "./frontend" },

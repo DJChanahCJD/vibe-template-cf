@@ -1,11 +1,43 @@
 // https://developers.cloudflare.com/workers/wrangler/configuration/
 {
   "name": "vibe-template-cf",
+  "main": "src/index.ts",
   "compatibility_date": "2026-01-01",
   "assets": {
     // The path to the directory containing the `index.html` file to be served at `/`
     "directory": "./frontend/out",
+    "binding": "ASSETS",
   },
+  "vars": {
+    "PASSWORD": "123456",
+  },
+  "kv_namespaces": [
+    {
+      "binding": "your_kv",
+      "id": "local-your-kv",
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "your_db",
+      "database_name": "your_db",
+      "database_id": "local-your-db",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "your_do",
+        "class_name": "RoomSync",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["RoomSync"],
+    },
+  ],
   "observability": {
     "enabled": true,
   },
