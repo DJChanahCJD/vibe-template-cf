@@ -1,8 +1,6 @@
 var assert = require("assert");
-const fs = require("fs");
-const path = require("path");
 
-const API_URL = "http://localhost:8788";
+const API_URL = "http://localhost:8788/api";
 const PASSWORD = "123456";
 
 describe("API Endpoints", function () {
