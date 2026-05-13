@@ -64,16 +64,16 @@ git init
 
 ```bash
 # 在根目录运行，自动安装所有 Workspaces 依赖
-npm install
+pnpm install
 ```
 
 ### 4. 启动项目
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
-> 第一次启动需要构建前端 `npm run build`，后续启动直接 `npm run dev` 即可。
+> 第一次启动需要构建前端 `pnpm run build`，后续启动直接 `pnpm run dev` 即可。
 
 ### 5. 访问网站
 
@@ -82,7 +82,7 @@ npm run dev
 
 > [!TIP]
 > 开发环境下密码为`123456`（在访问 `/admin` 页面时需要）
-> 修改 functions 代码后，可运行 `npm run ci-test` 快速测试功能是否正常。
+> 修改 functions 代码后，可运行 `pnpm run ci-test` 快速测试功能是否正常。
 
 ---
 
@@ -92,7 +92,7 @@ npm run dev
 
 Fork 本项目，然后在 Cloudflare Dashboard 创建 Pages 项目：
 
-- **构建命令**: `npm run build`
+- **构建命令**: `pnpm run build`
 - **构建输出目录**: `frontend/out`
 
 ### 2. 配置环境变量
@@ -116,7 +116,7 @@ PASSWORD=your_password          # 密码
 5. 变量名填写 `your_db`（改为你实际使用的变量名）
 6. 选择你的 D1 数据库并重新部署
 
-本地开发已通过 `npm run dev` 中的 `--d1 your_db` 挂载本地 D1，不需要在 `wrangler.jsonc` 写入 `database_id`。
+本地开发已通过 `pnpm run dev` 中的 `--d1 your_db` 挂载本地 D1，不需要在 `wrangler.jsonc` 写入 `database_id`。
 
 可通过 `GET /db/health` 检查 D1 绑定是否正常。
 
@@ -179,6 +179,8 @@ vibe-template-cf/
 - [x] 引入 Husky 做 pre-commit 检查
 - [x] 引入 D1 数据库支持
 - [x] 引入最小 PWA 支持
+- [ ] 转用 pnpm 打包， 前端改造为 Vite版本
+- [ ] 发布 npm 包，方便快速安装模板
 
 ## 🧰 开发检查
 

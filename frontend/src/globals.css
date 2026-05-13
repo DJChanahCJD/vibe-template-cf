@@ -126,14 +126,14 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   html {
-      scrollbar-gutter: auto;
-      scrollbar-width: thin;
-      /* 日间模式 */
-      scrollbar-color: var(--border) transparent;
-      /* 暗夜模式 */
-      @apply dark:[scrollbar-color:var(--muted-foreground)_transparent];
+    scrollbar-gutter: auto;
+    scrollbar-width: thin;
+    /* 日间模式 */
+    scrollbar-color: var(--border) transparent;
+    /* 暗夜模式 */
+    @apply dark:[scrollbar-color:var(--muted-foreground)_transparent];
   }
 
   html::-webkit-scrollbar {
@@ -155,7 +155,7 @@
   html::-webkit-scrollbar-thumb:hover {
     background-color: var(--foreground);
   }
-  
+
   body {
     @apply bg-background text-foreground;
   }
